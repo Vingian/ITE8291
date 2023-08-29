@@ -81,7 +81,9 @@ int set_effect(int dev,
 
 int open_device(short vendor, short product)
 {
-	int r = -1;
+	int r = -1, x = 5;
+
+	do {
 
 	DIR *dir;
 	if(!(dir = opendir("/dev"))) {
@@ -107,12 +109,14 @@ int open_device(short vendor, short product)
 
 	closedir(dir);
 
+	} while(r < 0 && --x && !sleep(1));
+
 	return r;
 }
 
 int main(void)
 {
-	if(getuid()) {
+	if(geteuid()) {
 		warnx("You need to be root...");
 		return 0;
 	}
